@@ -2,8 +2,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-    // FIXED CLIENT NAME (was conflicting before)
-    const client = supabase.createClient(
+    // FIXED: Use "db" instead of supabase to avoid breaking the script
+    const db = supabase.createClient(
         "https://curktrkcwobraducbkzj.supabase.co",
         "sb_publishable_tTjEWEJtcNYqK95wamq3cw_nkLdW-A2"
     );
@@ -34,8 +34,8 @@
 
         statusBox.textContent = "Creating account...";
 
-        const { data, error } = await client.auth.signUp({
-            email: mobile + "@betfity.fake", 
+        const { data, error } = await db.auth.signUp({
+            email: mobile + "@betfity.fake",
             password: password,
             options: {
                 data: {
