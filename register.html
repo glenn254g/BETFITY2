@@ -1,8 +1,25 @@
 <!-- Supabase JS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<!-- YOUR REGISTER FORM -->
+<form id="registerForm">
+    <input type="text" id="name" placeholder="Full Name" />
+    <input type="text" id="mobile" placeholder="Mobile Number" />
+    <input type="password" id="password" placeholder="Password" />
+    <input type="text" id="promocode" placeholder="Promo Code (optional)" />
+
+    <label>
+        <input type="checkbox" id="terms" />
+        Accept Terms and Conditions
+    </label>
+
+    <button type="submit" id="registerBtn">Register</button>
+</form>
+
+<p id="status" style="color:red; font-weight:bold;"></p>
+
+<!-- WORKING SUPABASE REGISTER CODE -->
 <script>
-    // FIXED: Use "db" instead of supabase to avoid breaking the script
     const db = supabase.createClient(
         "https://curktrkcwobraducbkzj.supabase.co",
         "sb_publishable_tTjEWEJtcNYqK95wamq3cw_nkLdW-A2"
@@ -14,11 +31,11 @@
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        let username = document.getElementById("name").value.trim();
-        let mobile = document.getElementById("mobile").value.trim();
-        let password = document.getElementById("password").value.trim();
-        let promo = document.getElementById("promocode").value.trim();
-        let terms = document.getElementById("terms").checked;
+        const username = document.getElementById("name").value.trim();
+        const mobile = document.getElementById("mobile").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const promo = document.getElementById("promocode").value.trim();
+        const terms = document.getElementById("terms").checked;
 
         if (!username || !mobile || !password) {
             statusBox.style.color = "red";
@@ -32,10 +49,11 @@
             return;
         }
 
+        statusBox.style.color = "black";
         statusBox.textContent = "Creating account...";
 
         const { data, error } = await db.auth.signUp({
-            email: mobile + "@betfity.fake",
+            email: mobile + "@yourapp.fake",
             password: password,
             options: {
                 data: {
@@ -50,7 +68,7 @@
             statusBox.style.color = "red";
             statusBox.textContent = error.message;
         } else {
-            statusBox.style.color = "#4CAF50";
+            statusBox.style.color = "green";
             statusBox.textContent = "Account created successfully!";
         }
     });
