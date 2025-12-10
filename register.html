@@ -1,138 +1,57 @@
-<!DOCTYPE html>
-<html class="no-js" lang="en">
+<!-- Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, maximum-scale=1.0">
+<script>
+    // FIXED CLIENT NAME (was conflicting before)
+    const client = supabase.createClient(
+        "https://curktrkcwobraducbkzj.supabase.co",
+        "sb_publishable_tTjEWEJtcNYqK95wamq3cw_nkLdW-A2"
+    );
 
-    <title>Register</title>
+    const form = document.getElementById("registerForm");
+    const statusBox = document.getElementById("status");
 
-    <link rel="stylesheet" href="css/bootstrap.css" />
-    <link rel="stylesheet" href="css/style.css" />
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            const referCode = urlParams.get('refer');
-            if (referCode) {
-                document.getElementById('promocode').value = referCode;
-            }
-        });
-    </script>
+        let username = document.getElementById("name").value.trim();
+        let mobile = document.getElementById("mobile").value.trim();
+        let password = document.getElementById("password").value.trim();
+        let promo = document.getElementById("promocode").value.trim();
+        let terms = document.getElementById("terms").checked;
 
-</head>
+        if (!username || !mobile || !password) {
+            statusBox.style.color = "red";
+            statusBox.textContent = "All fields are required!";
+            return;
+        }
 
-<body style="background:#1a1d29; color:white;">
+        if (!terms) {
+            statusBox.style.color = "red";
+            statusBox.textContent = "You must accept the terms!";
+            return;
+        }
 
-    <div class="container" style="margin-top:100px;">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
+        statusBox.textContent = "Creating account...";
 
-                <div class="card" style="background:#2a2f3a; padding:20px;">
-                    <h3 class="text-center mb-4">Create Your Account</h3>
-
-                    <!-- REGISTER FORM -->
-                    <form id="registerForm">
-
-                        <div class="mb-3">
-                            <label>Username</label>
-                            <input type="text" id="name" class="form-control"
-                                   placeholder="Enter username"
-                                   style="background:#333; color:white;">
-                        </div>
-
-                        <div class="mb-3">
-                            <label>Mobile Number</label>
-                            <input type="text" id="mobile" class="form-control"
-                                   placeholder="07xxxxxxxx"
-                                   style="background:#333; color:white;">
-                        </div>
-
-                        <div class="mb-3">
-                            <label>Password</label>
-                            <input type="password" id="password" class="form-control"
-                                   placeholder="Create password"
-                                   style="background:#333; color:white;">
-                        </div>
-
-                        <input type="hidden" id="promocode">
-
-                        <div class="mb-3">
-                            <input type="checkbox" id="terms"> I agree to Terms & Conditions
-                        </div>
-
-                        <button type="submit" class="btn w-100"
-                                style="background:#4CAF50; color:white; padding:12px;">
-                            Register
-                        </button>
-
-                    </form>
-
-                    <p id="status" class="text-center mt-3" style="color:#4CAF50;"></p>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Supabase JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script>
-        // YOUR SUPABASE KEYS (already inserted)
-        const supabase = supabase.createClient(
-            "https://curktrkcwobraducbkzj.supabase.co",
-            "sb_publishable_tTjEWEJtcNYqK95wamq3cw_nkLdW-A2"
-        );
-
-        const form = document.getElementById("registerForm");
-        const statusBox = document.getElementById("status");
-
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            let username = document.getElementById("name").value.trim();
-            let mobile = document.getElementById("mobile").value.trim();
-            let password = document.getElementById("password").value.trim();
-            let promo = document.getElementById("promocode").value.trim();
-            let terms = document.getElementById("terms").checked;
-
-            if (!username || !mobile || !password) {
-                statusBox.style.color = "red";
-                statusBox.textContent = "All fields are required!";
-                return;
-            }
-
-            if (!terms) {
-                statusBox.style.color = "red";
-                statusBox.textContent = "You must accept the terms!";
-                return;
-            }
-
-            statusBox.textContent = "Creating account...";
-
-            const { data, error } = await supabase.auth.signUp({
-                email: mobile + "@betfity.fake", // fake email identifier
-                password: password,
-                options: {
-                    data: {
-                        username: username,
-                        mobile: mobile,
-                        promo: promo
-                    }
+        const { data, error } = await client.auth.signUp({
+            email: mobile + "@betfity.fake", 
+            password: password,
+            options: {
+                data: {
+                    username: username,
+                    mobile: mobile,
+                    promo: promo
                 }
-            });
-
-            if (error) {
-                statusBox.style.color = "red";
-                statusBox.textContent = error.message;
-            } else {
-                statusBox.style.color = "#4CAF50";
-                statusBox.textContent = "Account created successfully!";
             }
         });
-    </script>
 
-</body>
-</html>
+        if (error) {
+            statusBox.style.color = "red";
+            statusBox.textContent = error.message;
+        } else {
+            statusBox.style.color = "#4CAF50";
+            statusBox.textContent = "Account created successfully!";
+        }
+    });
+</script>
